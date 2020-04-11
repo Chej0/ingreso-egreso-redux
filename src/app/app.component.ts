@@ -7,7 +7,10 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(private authservice: AuthService) {
-    this.authservice.initAuthListener();
+  
+  constructor( private authService: AuthService ){
+    this.authService.initAuthListener();
   }
+
+
 }

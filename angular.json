@@ -1,9 +1,9 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ingreso-egreso-app": {
+    "ingresoEgreso": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ingreso-egreso-app",
+            "outputPath": "dist/ingresoEgreso",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -63,18 +63,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ingreso-egreso-app:build"
+            "browserTarget": "ingresoEgreso:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ingreso-egreso-app:build:production"
+              "browserTarget": "ingresoEgreso:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ingreso-egreso-app:build"
+            "browserTarget": "ingresoEgreso:build"
           }
         },
         "test": {
@@ -111,15 +111,20 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ingreso-egreso-app:serve"
+            "devServerTarget": "ingresoEgreso:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ingreso-egreso-app:serve:production"
+              "devServerTarget": "ingresoEgreso:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
-    }},
-  "defaultProject": "ingreso-egreso-app"
+    }
+  },
+  "defaultProject": "ingresoEgreso"
 }
