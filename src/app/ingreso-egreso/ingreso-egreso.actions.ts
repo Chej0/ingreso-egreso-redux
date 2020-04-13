@@ -1,8 +1,11 @@
 import { createAction, props } from '@ngrx/store';
 import { IngresoEgreso } from '../models/ingreso-egreso.model';
 
-export const unsetItems = createAction('[IngresoEgreso] unsetItem');
+export const unSetItems = createAction('[IngresoEgreso] Unset Items');
+
 export const setItems = createAction(
-    '[IngresoEgreso] setItem',
-    props<{items: IngresoEgreso[]}>()
+    '[IngresoEgreso] Set Items',
+    props<{ items: IngresoEgreso[] }>()
 );
+
+

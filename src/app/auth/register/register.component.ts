@@ -1,13 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducer';
 import * as ui from '../../shared/ui.actions';
+
 
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/app.reducer';
 
 @Component({
   selector: 'app-register',
@@ -17,12 +19,13 @@ import { AppState } from 'src/app/app.reducer';
 export class RegisterComponent implements OnInit, OnDestroy {
 
   registroForm: FormGroup;
+  cargando: boolean = false;
   uiSubscription: Subscription;
-  cargando = false;
+
   constructor( private fb: FormBuilder,
                private authService: AuthService,
-               private router: Router,
-               private store: Store<AppState>) { }
+               private store: Store<AppState>,
+               private router: Router) { }
 
   ngOnInit() {
 
@@ -32,11 +35,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
       password: ['', Validators.required ],
     });
 
-    this.uiSubscription = this.store.select('ui').subscribe(uis => {
-      this.cargando = uis.isLoading;
-      console.log('cargando subs');
-    });
-
+    this.uiSubscription = this.store.select('ui')
+      .subscribe( ui => this.cargando = ui.isLoading );
   }
 
   ngOnDestroy() {
@@ -45,13 +45,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   crearUsuario() {
 
-    // if ( this.registroForm.invalid ) { return; }
+    if ( this.registroForm.invalid ) { return; }
+    
     // Swal.fire({
     //   title: 'Espere por favor',
     //   onBeforeOpen: () => {
-    //     Swal.showLoading();
+    //     Swal.showLoading()
     //   }
     // });
+
+    this.store.dispatch( ui.isLoading() );
 
 
     const { nombre, correo, password } = this.registroForm.value;
@@ -59,19 +62,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.authService.crearUsuario( nombre, correo, password )
       .then( credenciales => {
         console.log(credenciales);
-        this.store.dispatch(ui.isLoading());
 
         // Swal.close();
+        this.store.dispatch( ui.stopLoading() );
 
         this.router.navigate(['/']);
       })
       .catch( err => {
-        this.store.dispatch(ui.stopLoafing());
+        this.store.dispatch( ui.stopLoading() );
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: err.message
-        });
+        })
       });
   }
 

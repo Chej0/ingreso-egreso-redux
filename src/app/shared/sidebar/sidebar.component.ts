@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../app.reducer';
-import { Usuario } from '../../models/usuario.model';
+import { AppState } from 'src/app/app.reducer';
+
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,25 +14,30 @@ import { Subscription } from 'rxjs';
   styles: []
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  currentUser = '';
-  subs: Subscription;
-  constructor( private authService: AuthService, private store: Store<AppState>,
-               private router: Router) { }
+
+  nombre: string = '';
+  userSubs: Subscription;
+
+  constructor( private authService: AuthService,
+               private router: Router,
+               private store: Store<AppState> ) { }
 
   ngOnInit() {
-    this.subs = this.store.select('user').subscribe(({ user }) => {
-      this.currentUser = user?.nombre;
-    });
+    this.userSubs = this.store.select('user')
+                      .pipe(
+                        filter( ({user}) => user != null )
+                      )
+                      .subscribe( ({ user }) => this.nombre = user.nombre );
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.userSubs.unsubscribe();
   }
 
   logout() {
     this.authService.logout().then( () => {
       this.router.navigate(['/login']);
-    });
+    })
 
   }
 
